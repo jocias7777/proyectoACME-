@@ -1,0 +1,74 @@
+﻿@using proyectoACME.Models.Entities
+@model List<Encuesta>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Exportar";
+}
+
+<!-- Contenedor -->
+<div style="width: 97%; margin: 0 auto;">
+
+    <h1 class="page-title">Exportar resultados</h1>
+    <p class="page-sub">Descarga las respuestas de tus encuestas en formato CSV</p>
+
+    <div class="card-acme" style="padding:0;overflow:hidden;">
+        <table class="tabla-acme">
+            <thead>
+                <tr>
+                    <th>Encuesta</th>
+                    <th style="text-align:center;">Respuestas</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th style="text-align:center;">Exportar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5" style="text-align:center;color:#6B7280;padding:40px;">
+                            No tienes encuestas aún.
+                        </td>
+                    </tr>
+                }
+                @foreach (var enc in Model)
+                {
+                    <tr>
+                        <td style="font-weight:500;">@enc.Nombre</td>
+                        <td style="text-align:center;font-weight:500;color:#2383E2;">@enc.TotalRespuestas</td>
+                        <td>
+                            @if (enc.Activa)
+                            {<span class="badge-activa">Activa</span> }
+                            else
+                            { <span class="badge-inactiva">Inactiva</span>}
+                        </td>
+                        <td style="color:#6B7280;">@enc.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                        <td style="text-align:center;">
+                            @if (enc.TotalRespuestas > 0)
+                            {
+                                using (Html.BeginForm("ExportarCSV", "Encuestas", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@enc.Id" />
+                                    <button type="submit" class="btn-acento"
+                                            style="padding: 5px 14px !important; font-size: 13px !important; background-color: #198754 !important; color: white !important; border: none !important; border-radius: 3px !important; display: inline-flex !important; align-items: center !important; gap: 6px !important; cursor: pointer; transition: 0.2s;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                                        </svg>
+                                        Descargar
+                                    </button>
+                                }
+                            }
+                            else
+                            {
+                                <span style="font-size:12px;color:#6B7280;">Sin respuestas</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div> 

@@ -1,0 +1,122 @@
+﻿@model proyectoACME.Models.ViewModels.EncuestaViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool esEditar = Model.Id > 0;
+    ViewBag.Title = esEditar ? "Editar Encuesta" : "Nueva Encuesta";
+}
+
+<!-- Contenedor -->
+<div style="width: 97%; margin: 0 auto;">
+
+    <div class="breadcrumb-acme">
+        <a href="@Url.Action("Index","Encuestas")">Mis Encuestas</a>
+        &nbsp;›&nbsp;
+        <span>@(esEditar ? "Editar Encuesta" : "Nueva Encuesta")</span>
+    </div>
+
+    @using (Html.BeginForm(esEditar ? "Editar" : "Crear", "Encuestas",
+            FormMethod.Post, new { id = "formEncuesta" }))
+    {
+        @Html.AntiForgeryToken()
+        if (esEditar)
+        {
+            <input type="hidden" name="Id" value="@Model.Id" />
+        }
+
+        <div class="card-acme">
+
+            <!-- 1. Datos generales -->
+            <div class="section-title" style="margin-bottom: 16px; font-weight: 600;">Datos generales</div>
+            <div style="margin-bottom:14px;">
+                <label class="acme-label">Nombre de la encuesta <span style="color:#E03E3E">*</span></label>
+                <input type="text" name="Nombre" id="Nombre" value="@Model.Nombre"
+                       class="form-control-acme" placeholder="Ej. Encuesta de satisfacción" />
+            </div>
+            <div style="margin-bottom: 24px;">
+                <label class="acme-label">Descripción</label>
+                <textarea name="Descripcion" id="Descripcion" rows="3"
+                          class="form-control-acme"
+                          placeholder="Descripción opcional...">@Model.Descripcion</textarea>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #E5E4E0; margin: 24px 0;" />
+
+            <!-- 2. Campos -->
+            <div class="section-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+                <span style="font-weight: 600;">Campos</span>
+                <button type="button" class="btn-acento"
+                        style="font-size:12px;padding:5px 12px;"
+                        onclick="agregarCampo()">
+                    + Agregar campo
+                </button>
+            </div>
+            <table class="campos-table" style="width: 100%; margin-bottom: 24px;">
+                <thead>
+                    <tr>
+                        <th style="width:30px;"></th>
+                        <th style="text-align: left; padding-bottom: 8px;">Nombre del campo</th>
+                        <th style="text-align: left; padding-bottom: 8px;">Título visible</th>
+                        <th style="width:80px;text-align:center; padding-bottom: 8px;">Requerido</th>
+                        <th style="width:120px; text-align: left; padding-bottom: 8px;">Tipo</th>
+                        <th style="width:50px;"></th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyCampos">
+                    @for (int i = 0; i < Model.Campos.Count; i++)
+                    {
+                        var c = Model.Campos[i];
+                        <tr>
+                            <td><span class="drag-handle">⠿</span></td>
+                            <td style="padding: 4px 8px 4px 0;">
+                                <input type="hidden" name="Campos[@i].Id" value="@c.Id" />
+                                <input type="text" name="Campos[@i].NombreCampo"
+                                       value="@c.NombreCampo"
+                                       class="campo-input form-control-acme" placeholder="nombre_campo" />
+                            </td>
+                            <td style="padding: 4px 8px 4px 0;">
+                                <input type="text" name="Campos[@i].TituloCampo"
+                                       value="@c.TituloCampo"
+                                       class="campo-input form-control-acme" placeholder="¿Cuál es tu nombre?" />
+                            </td>
+                            <td style="text-align:center; padding: 4px 8px;">
+                                <input type="checkbox" name="Campos[@i].EsRequerido"
+                                       value="true" @(c.EsRequerido ? "checked" : "") />
+                            </td>
+                            <td style="padding: 4px 8px 4px 0;">
+                                <select name="Campos[@i].TipoCampo" class="campo-select form-control-acme">
+                                    <option value="">-- Tipo --</option>
+                                    <option value="Texto" @(c.TipoCampo == "Texto" ? "selected" : "")>Texto</option>
+                                    <option value="Numero" @(c.TipoCampo == "Numero" ? "selected" : "")>Número</option>
+                                    <option value="Fecha" @(c.TipoCampo == "Fecha" ? "selected" : "")>Fecha</option>
+                                </select>
+                            </td>
+                            <td style="padding: 4px 0; text-align: right;">
+                                <button type="button" class="btn-eliminar-campo"
+                                        style="background: transparent !important; color: #E03E3E !important; border: none !important; font-size: 18px !important; padding: 4px 8px !important; cursor: pointer; outline: none; box-shadow: none;"
+                                        onclick="eliminarCampo(this)">
+                                    ×
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <hr style="border: 0; border-top: 1px solid #E5E4E0; margin: 24px 0 16px 0;" />
+
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <a href="@Url.Action("Index","Encuestas")" class="btn-outline-acme">Cancelar</a>
+                <button type="button" class="btn-acento" onclick="guardarEncuesta()">
+                    Guardar
+                </button>
+            </div>
+
+        </div>
+    }
+
+</div>
+
+@section scripts {
+    <script src="@Url.Content("~/Scripts/encuestas-form.js")"></script>
+}

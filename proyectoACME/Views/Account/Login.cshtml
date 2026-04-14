@@ -1,0 +1,97 @@
+﻿@model proyectoACME.Models.ViewModels.LoginViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutPublico.cshtml";
+    ViewBag.Title = "Iniciar sesión";
+}
+
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+
+    <div style="width: 420px;">
+        <!-- Tarjeta principal -->
+        <div class="card-acme" style="background: white; border-radius: 4px; padding: 48px 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+
+            <!-- Logo y Título -->
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                <span style="font-size: 22px; font-weight: 600; color: #111827; letter-spacing: -0.5px;">ACME </span>
+            </div>
+
+            <!-- Subtítulo -->
+            <div style="text-align: center; margin-bottom: 40px;">
+                <p style="color: #6b7280; font-size: 13px; margin: 0;">Ingrese sus credenciales para continuar</p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Error))
+            {
+                <div style="background:#fde8e8;border:1px solid #f5c2c2;border-radius:3px;
+                            padding:10px 14px;font-size:13px;color:#E03E3E;margin-bottom:20px;">
+                    @Model.Error
+                </div>
+            }
+
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <!-- Input Usuario -->
+                <div style="margin-bottom: 28px;">
+                    <label style="display: block; margin-bottom: 4px; color: #374151; font-size: 12px; font-weight: 500;">Usuario</label>
+                    <input type="text" name="Username" id="Username"
+                           value="@Model.Username"
+                           placeholder="Ingrese su nombre de usuario" autocomplete="off"
+                           style="width: 100%; border: none; border-bottom: 1px solid #e5e7eb; padding: 8px 0; font-size: 14px; color: #111827; outline: none; background: transparent; transition: border-color 0.2s;"
+                           onfocus="this.style.borderBottomColor='#0d47a1'" onblur="this.style.borderBottomColor='#e5e7eb'" />
+                </div>
+
+                <!-- Input Contraseña -->
+                <div style="margin-bottom: 36px; position: relative;">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                        <label style="color: #374151; font-size: 12px; font-weight: 500;">Contraseña</label>
+                    </div>
+                    <input type="password" name="Password" id="Password"
+                           placeholder="••••••••"
+                           style="width: 100%; border: none; border-bottom: 1px solid #e5e7eb; padding: 8px 0; font-size: 14px; color: #111827; outline: none; background: transparent; letter-spacing: 2px; transition: border-color 0.2s;"
+                           onfocus="this.style.borderBottomColor='#0d47a1'" onblur="this.style.borderBottomColor='#e5e7eb'" />
+                </div>
+
+                <!-- Botón de Iniciar Sesión -->
+                <button type="submit" id="btnLogin"
+                        style="width: 100%; background: #155eef; color: #fff; border: none;
+                               border-radius: 3px; padding: 12px; font-size: 12px;
+                               font-weight: 500; cursor: pointer; margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(21, 94, 239, 0.2); transition: background 0.2s;"
+                        onmouseover="this.style.backgroundColor='#175cd3'" onmouseout="this.style.backgroundColor='#155eef'">
+                    Iniciar sesión
+                </button>
+
+                <!-- Enlace Inferior -->
+                <div style="text-align: center; font-size: 13px; color: #4b5563;">
+                    ¿No tiene una cuenta? <a href="#" style="color: #0d47a1; text-decoration: none; font-weight: 600;">Solicitar acceso</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        document.getElementById('btnLogin').addEventListener('click', function (e) {
+            var u = document.getElementById('Username').value.trim();
+            var p = document.getElementById('Password').value.trim();
+            if (!u || !p) {
+                e.preventDefault();
+                showToast('Completa usuario y contraseña', 'error');
+            }
+        });
+
+        function showToast(mensaje, tipo) {
+            var container = document.getElementById('toast-container');
+            var toast = document.createElement('div');
+            toast.className = 'toast-acme ' + (tipo === 'success' ? 'success' : 'error');
+            toast.textContent = mensaje;
+            container.appendChild(toast);
+            setTimeout(function () {
+                toast.style.animation = 'toastOut .3s ease forwards';
+                setTimeout(function () { toast.remove(); }, 300);
+            }, 3000);
+        }
+    </script>
+}

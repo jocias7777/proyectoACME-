@@ -1,0 +1,244 @@
+﻿@using proyectoACME.Models.Entities
+@model List<Encuesta>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Mis Encuestas";
+}
+
+<div style="width: 97%; margin: 0 auto;">
+
+    <h1 class="page-title">Mis Encuestas</h1>
+
+    <div class="card-acme" style="padding:0; overflow:hidden; background: #FFFFFF; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); border-radius: 5px; border: 1px solid #E5E4E0;">
+
+        <div class="toolbar" style="padding: 16px; border-bottom: 1px solid #E5E4E0; display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+            <input type="text" id="buscador" class="search-box" placeholder="Buscar encuesta..." style="width: 280px;">
+            <a href="@Url.Action("Crear","Encuestas")" class="btn-acento">Agregar encuesta</a>
+        </div>
+
+        <table class="tabla-acme" id="tablaEncuestas" style="width: 100%; margin: 0;">
+            <thead>
+                <tr>
+                    <th style="font-weight: bold;">Nombre</th>
+                    <th style="font-weight: bold;">Descripción</th>
+                    <th style="text-align:center; font-weight: bold;">Campos</th>
+                    <th style="text-align:center; font-weight: bold;">Respuestas</th>
+                    <th style="font-weight: bold;">Fecha</th>
+                    <th style="font-weight: bold;">Estado</th>
+                    <th style="font-weight: bold;">Link</th>
+                    <th style="font-weight: bold;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="8" style="text-align:center;color:#6B7280;padding:40px;">
+                            No tienes encuestas aún. <a href="@Url.Action("Crear","Encuestas")" style="color:#2383E2;">Crea una nueva</a>.
+                        </td>
+                    </tr>
+                }
+                @foreach (var enc in Model)
+                {
+                    <tr>
+                        <td style="font-weight:500;">@enc.Nombre</td>
+                        <td style="color:#6B7280;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            @(enc.Descripcion != null && enc.Descripcion.Length > 60
+                                ? enc.Descripcion.Substring(0, 60) + "…" : enc.Descripcion)
+                        </td>
+                        <td style="text-align:center;">@enc.Campos.Count</td>
+                        <td style="text-align:center;">@enc.TotalRespuestas</td>
+                        <td style="color:#6B7280;white-space:nowrap;">@enc.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                        <td style="text-align:center;vertical-align:middle;">
+                            <label class="switch-estado @(enc.Activa ? "activo" : "inactivo")">
+                                <input type="checkbox" @(enc.Activa ? "checked" : "") onchange="toggleEstado(@enc.Id, this, this.parentElement)" />
+                                <span class="slider" style="background-color: @(enc.Activa ? "#22C55E" : "#E03E3E")"><span class="knob" style="transform: @(enc.Activa ? "translateX(18px)" : "translateX(0)")"></span></span>
+                            </label>
+                        </td>
+                        <td>
+                            <span style="font-size:12px;color:#6B7280;font-family:monospace;">
+                                @enc.TokenLink.Substring(0, 12)…
+                            </span>
+                            <button onclick="copiarLink('@enc.TokenLink')"
+                                    style="background:none;border:none;cursor:pointer;
+                                           color:#2383E2;font-size:12px;margin-left:4px;
+                                           padding:2px 6px;border-radius:3px;"
+                                    title="Copiar link público">
+                                Copiar
+                            </button>
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:8px;flex-wrap:nowrap;">
+
+                                <a href="@Url.Action("Editar","Encuestas", new { id = enc.Id })"
+                                   style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;background:#2383E2;color:#fff;border:1px solid #2383E2;border-radius:3px;text-decoration:none;"
+                                   title="Editar">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                </a>
+
+                                <a href="@Url.Action("Resultados","Encuestas", new { id = enc.Id })"
+                                   style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;background:#fff;color:#6B7280;border:1px solid #E5E4E0;border-radius:3px;text-decoration:none;"
+                                   title="Resultados">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" /></svg>
+                                </a>
+
+                                <!-- Botón Eliminar -->
+                                <button style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;background:#E03E3E;color:#fff;border:1px solid #E03E3E;border-radius:3px;cursor:pointer;"
+                                        title="Eliminar"
+                                        onclick="abrirModalEliminar(@enc.Id, '@Html.Raw(enc.Nombre.Replace("'","\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'"  ))')">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<!-- ══════════════════════════════════════
+     MODAL CONFIRMAR ELIMINACIÓN
+══════════════════════════════════════ -->
+<div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius:3px;border:1px solid #E5E4E0;background:#fff;">
+            <div class="modal-header" style="border-bottom:1px solid #E5E4E0;padding:16px 20px;">
+                <h5 class="modal-title" style="font-size:15px;font-weight:500;color:#1A1A1A;">
+                    Eliminar encuesta
+                </h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        style="font-size:20px;color:#6B7280;background:transparent;border:none;cursor:pointer;">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body" style="padding:20px;font-size:13px;color:#1A1A1A;line-height:1.6;">
+                <p style="margin:0;">
+                    ¿Estás seguro de que deseas eliminar la encuesta
+                    <strong id="modalNombreEncuesta" style="color:#1A1A1A;"></strong>?
+                </p>
+                <p style="margin:12px 0 0;color:#6B7280;font-size:12px;">
+                    Esta acción eliminará también todos los campos y respuestas registradas.
+                    No se puede deshacer.
+                </p>
+            </div>
+            <div class="modal-footer" style="border-top:1px solid #E5E4E0;padding:12px 20px;display:flex;justify-content:flex-end;align-items:center;gap:8px;">
+                <button type="button" class="btn-outline-acme" data-dismiss="modal" style="width:110px;text-align:center;">Cancelar</button>
+                @using (Html.BeginForm("Eliminar", "Encuestas", FormMethod.Post, new { id = "formEliminar", style = "margin:0;padding:0;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="inputIdEliminar" />
+                    <button type="submit" class="btn-danger-acme" style="width:110px;text-align:center;">Sí, eliminar</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL VER LINK PÚBLICO
+══════════════════════════════════════ -->
+<div class="modal fade" id="modalLink" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius:3px;border:1px solid #E5E4E0;">
+            <div class="modal-header" style="border-bottom:1px solid #E5E4E0;padding:16px 20px;">
+                <h5 class="modal-title" style="font-size:15px;font-weight:500;">
+                    Link público de la encuesta
+                </h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        style="font-size:20px;color:#6B7280;">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body" style="padding:20px;">
+                <p style="font-size:12px;color:#6B7280;margin-bottom:8px;">
+                    Comparte este link para que cualquier persona pueda responder la encuesta:
+                </p>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <input type="text" id="linkPublicoInput" readonly
+                           style="flex:1;border:1px solid #E5E4E0;border-radius:3px;
+                                  padding:8px 10px;font-size:12px;font-family:monospace;
+                                  background:#F7F6F3;color:#1A1A1A;" />
+                    <button class="btn-acento" style="padding:8px 14px;font-size:12px;white-space:nowrap;"
+                            onclick="copiarDesdeModal()">
+                        Copiar
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top:1px solid #E5E4E0;padding:12px 20px;">
+                <button type="button" class="btn-outline-acme" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        document.getElementById('buscador').addEventListener('input', function () {
+            var val = this.value.toLowerCase();
+            document.querySelectorAll('#tablaEncuestas tbody tr').forEach(function (fila) {
+                fila.style.display = fila.textContent.toLowerCase().includes(val) ? '' : 'none';
+            });
+        });
+
+        function abrirModalEliminar(id, nombre) {
+            document.getElementById('inputIdEliminar').value = id;
+            document.getElementById('modalNombreEncuesta').textContent = '"' + nombre + '"';
+            $('#modalEliminar').modal('show');
+        }
+
+        function copiarLink(token) {
+            var url = window.location.origin + '/Publico/Llenar/' + token;
+            document.getElementById('linkPublicoInput').value = url;
+            $('#modalLink').modal('show');
+        }
+
+        function copiarDesdeModal() {
+            var input = document.getElementById('linkPublicoInput');
+            input.select();
+            document.execCommand('copy');
+            showToast('Link copiado al portapapeles', 'success');
+            $('#modalLink').modal('hide');
+        }
+
+        function toggleEstado(id, checkbox, label) {
+            var slider = label.querySelector('.slider');
+            var knob = slider.querySelector('.knob');
+
+            // onchange fires DESPUES de que el checkbox ya cambió
+            var nuevoEstado = checkbox.checked; // Estado después del clic
+            var estadoAnterior = !checkbox.checked; // Estado antes del clic
+
+            var colorNuevo = nuevoEstado ? '#22C55E' : '#E03E3E';
+            var transformNuevo = nuevoEstado ? 'translateX(18px)' : 'translateX(0)';
+            var mensajeNuevo = nuevoEstado ? 'Encuesta activada' : 'Encuesta desactivada';
+
+            // Cambiar colores inmediatamente
+            slider.style.backgroundColor = colorNuevo;
+            knob.style.transform = transformNuevo;
+
+            $.ajax({
+                url: '/Encuestas/ToggleEstado',
+                type: 'GET',
+                data: { id: id },
+                timeout: 10000,
+                success: function (data) {
+                    if (data.success) {
+                        showToast(mensajeNuevo, 'success');
+                    } else {
+                        checkbox.checked = estadoAnterior;
+                        slider.style.backgroundColor = estadoAnterior ? '#22C55E' : '#E03E3E';
+                        knob.style.transform = estadoAnterior ? 'translateX(18px)' : 'translateX(0)';
+                        showToast('Error al cambiar el estado', 'error');
+                    }
+                },
+                error: function (xhr) {
+                    checkbox.checked = estadoAnterior;
+                    slider.style.backgroundColor = estadoAnterior ? '#22C55E' : '#E03E3E';
+                    knob.style.transform = estadoAnterior ? 'translateX(18px)' : 'translateX(0)';
+                    showToast('Error de conexión', 'error');
+                }
+            });
+        }
+    </script>
+}

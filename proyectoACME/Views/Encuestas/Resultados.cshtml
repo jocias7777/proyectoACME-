@@ -1,0 +1,94 @@
+﻿@using proyectoACME.Models.Entities
+@model Encuesta
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Resultados";
+    var encuesta = ViewBag.Encuesta as Encuesta;
+    var respuestas = ViewBag.Respuestas as List<RespuestaEncuesta>;
+    var ultimaFecha = respuestas != null && respuestas.Count > 0
+        ? respuestas[respuestas.Count - 1].FechaRespuesta.ToString("dd/MM/yyyy HH:mm")
+        : "—";
+}
+
+
+<div style="width: 97%; margin: 0 auto;">
+
+    <div class="breadcrumb-acme">
+        <a href="@Url.Action("Index","Encuestas")">Mis Encuestas</a>
+        &nbsp;›&nbsp;
+        <span>Resultados: @encuesta.Nombre</span>
+    </div>
+
+    <div style="margin-bottom:20px;">
+        <a href="@Url.Action("Index","Encuestas")" class="btn-acento"
+           style="display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:6px 12px; text-decoration:none;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Volver
+        </a>
+    </div>
+
+    <!-- Métricas -->
+    <div class="metric-cards">
+        <div class="metric-card">
+            <div class="metric-value">@(respuestas != null ? respuestas.Count : 0)</div>
+            <div class="metric-label">Total de respuestas</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">@encuesta.Campos.Count</div>
+            <div class="metric-label">Campos configurados</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value" style="font-size:18px;">@ultimaFecha</div>
+            <div class="metric-label">Última respuesta</div>
+        </div>
+    </div>
+
+    <!-- Tabla de respuestas -->
+    <div class="card-acme" style="padding:0;overflow:hidden;">
+        <div style="overflow-x:auto;">
+            <table class="tabla-acme">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        @foreach (var campo in encuesta.Campos)
+                        {
+                            <th>@campo.TituloCampo</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (respuestas != null && respuestas.Count > 0)
+                    {
+                        int num = 1;
+                        foreach (var resp in respuestas)
+                        {
+                            <tr>
+                                <td style="color:#6B7280;">@num</td>
+                                <td style="color:#6B7280;white-space:nowrap;">
+                                    @resp.FechaRespuesta.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+                                @foreach (var campo in encuesta.Campos)
+                                {
+                                    var detalle = resp.Detalles.Find(d => d.CampoEncuestaId == campo.Id);
+                                    <td>@(detalle != null && !string.IsNullOrEmpty(detalle.Valor) ? detalle.Valor : "—")</td>
+                                }
+                            </tr>
+                            num++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="@(2 + encuesta.Campos.Count)"
+                                style="text-align:center;color:#6B7280;padding:32px;">
+                                Aún no hay respuestas registradas.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div> 

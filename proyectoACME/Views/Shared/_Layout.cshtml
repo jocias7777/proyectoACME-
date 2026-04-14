@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Acme</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/site.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/encuestas.css?v=4")" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar-acme">
+        <a href="@Url.Action("Index","Encuestas")" class="brand">Proyecto Acme</a>
+        
+    </header>
+
+    <!-- Sidebar -->
+    @Html.Partial("_Sidebar")
+
+    <!-- Contenido -->
+    <div class="main-content">
+        <div class="page-inner">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container"></div>
+
+    <script src="@Url.Content("~/Scripts/jquery-3.7.1.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
+
+    <script>
+        function showToast(mensaje, tipo) {
+            var container = document.getElementById('toast-container');
+            var toast = document.createElement('div');
+            toast.className = 'toast-acme ' + (tipo === 'success' ? 'success' : 'error');
+            toast.textContent = mensaje;
+            container.appendChild(toast);
+            setTimeout(function () {
+                toast.style.animation = 'toastOut .3s ease forwards';
+                setTimeout(function () { toast.remove(); }, 300);
+            }, 3000);
+        }
+
+        @if (TempData["ToastSuccess"] != null)
+        {
+            <text>showToast('@TempData["ToastSuccess"]', 'success');</text>
+        }
+        @if (TempData["ToastError"] != null)
+        {
+            <text>showToast('@TempData["ToastError"]', 'error');</text>
+        }
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

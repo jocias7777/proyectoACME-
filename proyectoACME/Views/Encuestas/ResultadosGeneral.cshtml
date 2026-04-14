@@ -1,0 +1,81 @@
+﻿@using proyectoACME.Models.Entities
+@model List<Encuesta>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Resultados";
+}
+
+<!-- Contenedor-->
+<div style="width: 97%; margin: 0 auto;">
+
+    <h1 class="page-title">Resultados</h1>
+    <p class="page-sub">Resumen general de todas tus encuestas</p>
+
+    <!-- Métricas generales -->
+    <div class="metric-cards">
+        <div class="metric-card">
+            <div class="metric-value">@Model.Count</div>
+            <div class="metric-label">Total de encuestas</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">@Model.Sum(e => e.TotalRespuestas)</div>
+            <div class="metric-label">Total de respuestas</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">@Model.Count(e => e.Activa)</div>
+            <div class="metric-label">Encuestas activas</div>
+        </div>
+    </div>
+
+    <div class="card-acme" style="padding:0;overflow:hidden;">
+        <table class="tabla-acme">
+            <thead>
+                <tr>
+                    <th>Encuesta</th>
+                    <th>Descripción</th>
+                    <th style="text-align:center;">Campos</th>
+                    <th style="text-align:center;">Respuestas</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="6" style="text-align:center;color:#6B7280;padding:40px;">
+                            No tienes encuestas aún.
+                        </td>
+                    </tr>
+                }
+                @foreach (var enc in Model)
+                {
+                    <tr>
+                        <td style="font-weight:500;">@enc.Nombre</td>
+                        <td style="color:#6B7280;">
+                            @(enc.Descripcion != null && enc.Descripcion.Length > 50
+                                ? enc.Descripcion.Substring(0, 50) + "…" : enc.Descripcion)
+                        </td>
+                        <td style="text-align:center;">@enc.Campos.Count</td>
+                        <td style="text-align:center;font-weight:500;color:#2383E2;">@enc.TotalRespuestas</td>
+                        <td>
+                            @if (enc.Activa)
+                            {<span class="badge-activa">Activa</span> }
+                            else
+                            { <span class="badge-inactiva">Inactiva</span>}
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Resultados","Encuestas", new { id = enc.Id })"
+                               class="btn-acento"
+                               style="display:inline-flex;align-items:center;justify-content:center;padding:4px 6px;text-decoration:none;"
+                               title="Ver detalle">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M5 20h2v-8H5v8zm6 0h2V8h-2v12zm6 0h2V4h-2v16z" /></svg>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div> 
