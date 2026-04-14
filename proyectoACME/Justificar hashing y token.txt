@@ -1,0 +1,5 @@
+﻿para las contrasenas usamos bcrypt porque es un algoritmo seguro que ya viene probado por la industria y no permite que nadie pueda leer las claves originales ni siquiera nosotros si alguien obtiene la
+    base de datos solo va a ver texto ilegible bcrypt ademas agrega una sal aleatoria a cada contrasena lo que hace casi imposible ataques con tablas precalculadas
+
+    para los links publicos usamos guid que son identificadores unicos universales de 32 caracteres la razon es que son practicamente imposibles de adivinar por azar y no necesitamos llevar un contador
+    manual cada vez que se crea una encuesta se genera uno nuevo y como son unicos no hay riesgo de que dos encuestas tengan el mismo link

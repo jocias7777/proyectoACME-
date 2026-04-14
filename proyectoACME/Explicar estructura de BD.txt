@@ -1,0 +1,17 @@
+﻿la base de datos tiene cinco tablas que trabajan juntas para manejar todo el sistema de encuestas
+
+la tabla usuarios guarda a las personas que pueden entrar al sistema con su nombre y clave encriptada por seguridad
+
+la tabla encuestas guarda cada encuesta creada con su nombre descripcion un token unico para el link publico y si esta activa o no tambien guarda que usuario la creo
+
+la tabla camposencuesta guarda las preguntas de cada encuesta cada una con su nombre interno el titulo que ve el publico si es obligatoria el tipo de dato que acepta que solo puede ser texto numero o
+fecha y el orden en que aparecen
+
+la tabla respuestasencuesta es el encabezado de cada vez que alguien llena una encuesta guarda a que encuesta pertenece la fecha y la ip de quien respondio
+
+la tabla detallerespuesta guarda cada respuesta individual vinculada con el encabezado de respuesta y con el campo especifico que se respondio el valor se guarda como texto porque asi funciona para
+cualquier tipo de campo
+
+la relacion es sencilla un usuario crea muchas encuestas una encuesta tiene muchos campos y muchas respuestas y cada respuesta tiene muchos detalles uno por cada campo
+
+se decidio separar las respuestas en encabezado y detalle para no tener columnas dinamicas y poder manejar cualquier cantidad de preguntas sin modificar la estructura
