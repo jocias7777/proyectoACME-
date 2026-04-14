@@ -62,7 +62,7 @@ body {
     position: fixed;
     top: 48px;
     left: 0;
-    width: 225px; 
+    width: 225px;
     height: calc(100vh - 48px);
     background: #FFFFFF;
     border-right: 1px solid #E5E4E0;
@@ -74,7 +74,7 @@ body {
     .sidebar .sidebar-section {
         padding: 0 12px;
         margin-bottom: 5px;
-        font-size: 12px; 
+        font-size: 12px;
         font-weight: 500;
         color: #6B7280;
         text-transform: uppercase;
@@ -84,7 +84,7 @@ body {
     .sidebar .nav-item {
         display: flex;
         align-items: center;
-        gap: 10px; 
+        gap: 10px;
         padding: 8px 14px;
         font-size: 14px;
         color: #6B7280;
@@ -97,7 +97,7 @@ body {
         /* Íconos proporcionados al nuevo tamaño de texto */
         .sidebar .nav-item i,
         .sidebar .nav-item svg {
-            font-size: 16px; 
+            font-size: 16px;
             width: 16px;
             height: 16px;
         }
@@ -132,12 +132,12 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 8px 16px !important; 
-    font-size: 13px !important; 
-    border-radius: 3px !important; 
-    border: none !important; 
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    border-radius: 3px !important;
+    border: none !important;
     cursor: pointer;
-    text-decoration: none !important; 
+    text-decoration: none !important;
     outline: none !important;
 }
 
@@ -156,7 +156,7 @@ body {
 
 /* Botón Cancelar / Cerrar (Gris fuerte) */
 .btn-outline-acme {
-    background: #6B7280 !important; 
+    background: #6B7280 !important;
     color: #ffffff !important;
 }
 
@@ -203,12 +203,12 @@ label.acme-label {
 }
 
     .tabla-acme thead th {
-        background: #FFFFFF; 
+        background: #FFFFFF;
         border-bottom: 1px solid #E5E4E0;
         padding: 9px 12px;
         text-align: left;
-        font-weight: 600; 
-        font-size: 13px; 
+        font-weight: 600;
+        font-size: 13px;
         color: #6B7280;
     }
 
@@ -385,3 +385,105 @@ label.acme-label {
         color: #6B7280;
         margin-top: 4px;
     }
+
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sidebar {
+        width: 200px; 
+    }
+
+    .main-content {
+        margin-left: 200px;
+    }
+
+    .page-inner {
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* 1. Navbar */
+    .navbar-acme {
+        padding: 0 16px;
+    }
+
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #E5E4E0;
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        overflow-y: hidden;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+        z-index: 998;
+    }
+
+
+        .sidebar .sidebar-section {
+            display: none;
+        }
+
+
+        .sidebar .nav-item {
+            display: inline-flex;
+            margin: 0 4px 0 0;
+            padding: 6px 12px;
+            flex-shrink: 0; 
+        }
+
+
+    .main-content {
+        margin-left: 0;
+        padding-top: 102px; 
+    }
+
+    .page-inner {
+        padding: 20px 16px; 
+    }
+
+ 
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch; 
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+
+    .tabla-acme {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+
+ 
+    .metric-card {
+        flex: 1 1 100%;
+        padding: 16px;
+    }
+
+    #toast-container {
+        left: 16px;
+        right: 16px;
+        align-items: center;
+    }
+
+    .toast-acme {
+        width: 100%;
+        max-width: 100%;
+    }
+
+
+    .form-control-acme,
+    .search-box {
+        font-size: 16px; 
+    }
+}

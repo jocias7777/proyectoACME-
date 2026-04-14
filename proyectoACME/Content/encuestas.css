@@ -271,3 +271,36 @@
             border-radius: 50%;
             transition: 0.3s;
         }
+
+
+@media (max-width: 768px) {
+
+    .campos-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; 
+        white-space: nowrap; 
+    }
+
+
+    .publico-wrap {
+        margin: 30px auto;
+    }
+
+    .gracias-wrap {
+        margin: 40px auto;
+    }
+
+    .modal-acme {
+        width: 90%;
+        max-width: 400px;
+    }
+
+
+    .campo-input,
+    .campo-select,
+    .campo-publico input {
+        padding: 10px 12px;
+        font-size: 14px; 
+    }
+}
