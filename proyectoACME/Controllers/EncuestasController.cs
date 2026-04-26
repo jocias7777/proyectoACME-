@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -98,8 +98,15 @@ namespace proyectoACME.Controllers
                 Campos = MapearCampos(model.Campos)
             };
 
-            EncuestaDAL.Actualizar(encuesta);
-            TempData["ToastSuccess"] = "Encuesta actualizada correctamente";
+            try
+            {
+                EncuestaDAL.Actualizar(encuesta);
+                TempData["ToastSuccess"] = "Encuesta actualizada correctamente";
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ToastError"] = ex.Message;
+            }
             return RedirectToAction("Index");
         }
 

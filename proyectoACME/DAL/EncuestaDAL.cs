@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -175,8 +175,26 @@ namespace proyectoACME.DAL
             }
         }
 
+        public static bool TieneRespuestas(int encuestaId)
+        {
+            using (var con = ConexionDB.ObtenerConexion())
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM dbo.RespuestasEncuesta WHERE EncuestaId = @EncuestaId", con))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@EncuestaId", SqlDbType.Int) { Value = encuestaId });
+                    return (int)cmd.ExecuteScalar() > 0;
+                }
+            }
+        }
+
         public static void Actualizar(Encuesta enc)
         {
+            if (TieneRespuestas(enc.Id))
+            {
+                throw new InvalidOperationException("No se puede editar una encuesta que ya tiene respuestas.");
+            }
             using (var con = ConexionDB.ObtenerConexion())
             {
                 con.Open();

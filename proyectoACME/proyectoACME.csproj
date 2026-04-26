@@ -138,8 +138,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\EncuestasController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PublicoController.cs" />
+    <Compile Include="Controllers\UtilController.cs" />
     <Compile Include="DAL\ConexionDB.cs" />
     <Compile Include="DAL\EncuestaDAL.cs" />
     <Compile Include="DAL\RespuestaDAL.cs" />
